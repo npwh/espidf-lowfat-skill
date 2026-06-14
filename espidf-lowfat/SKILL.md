@@ -9,6 +9,17 @@ Use this skill to run ESP-IDF commands through [lowfat](https://github.com/zdk/l
 
 This skill is an integration for the upstream lowfat project, not a replacement for it. Install and update lowfat from [zdk/lowfat](https://github.com/zdk/lowfat).
 
+## Credits And Install Context
+
+- Credit upstream lowfat: [zdk/lowfat](https://github.com/zdk/lowfat).
+- Credit Espressif ESP-IDF: [espressif/esp-idf](https://github.com/espressif/esp-idf).
+- lowfat upstream install example: `cargo install lowfat`.
+- lowfat direct usage pattern: `lowfat <command>`, for example `lowfat git status`.
+- lowfat savings commands: `lowfat stats`, `lowfat stats --audit`, and `lowfat history`.
+- This skill only provides ESP-IDF-specific filter rules, shims, and helper scripts; it does not vendor lowfat.
+
+For a fresh Windows setup, install lowfat first, then install this skill, then run `scripts/install-wrapper-mode.ps1` to install the ESP-IDF plugin and shims.
+
 ## Quick Start
 
 For lowfat wrapper mode with stats/history, use:
