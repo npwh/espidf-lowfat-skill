@@ -12,8 +12,8 @@ Use this skill to run ESP-IDF commands while preserving firmware debugging signa
 For lowfat wrapper mode with stats/history, use:
 
 ```powershell
-$env:LOWFAT_HOME = "C:\Users\NPWH\.lowfat"
-lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk build
+$env:LOWFAT_HOME = "$env:USERPROFILE\.lowfat"
+lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project build
 ```
 
 Use `idf.py.cmd` because Windows PowerShell normally exposes `idf.py` as an alias, not as an executable that lowfat can wrap reliably.
@@ -21,37 +21,37 @@ Use `idf.py.cmd` because Windows PowerShell normally exposes `idf.py` as an alia
 Prefer the bundled helper:
 
 ```powershell
-powershell.exe -ExecutionPolicy Bypass -File C:\Users\NPWH\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1 -ProjectPath D:\espidf\github\esp32-blynk build
+powershell.exe -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1" -ProjectPath "D:\path\to\esp-idf-project" build
 ```
 
 For flash:
 
 ```powershell
-powershell.exe -ExecutionPolicy Bypass -File C:\Users\NPWH\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1 -ProjectPath D:\espidf\github\esp32-blynk -IdfArgs @("-p","COM5","flash")
+powershell.exe -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1" -ProjectPath "D:\path\to\esp-idf-project" -IdfArgs @("-p","COMx","flash")
 ```
 
 For concise serial monitor output:
 
 ```powershell
-powershell.exe -ExecutionPolicy Bypass -File C:\Users\NPWH\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1 -ProjectPath D:\espidf\github\esp32-blynk -IdfArgs @("-p","COM5","monitor")
+powershell.exe -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1" -ProjectPath "D:\path\to\esp-idf-project" -IdfArgs @("-p","COMx","monitor")
 ```
 
 ## Workflow
 
 1. Use `scripts/idf-lowfat.ps1` instead of calling `idf.py` directly when output will be long.
 2. Pass the ESP-IDF project path with `-ProjectPath`.
-3. Pass normal `idf.py` arguments after the script, or with `-IdfArgs @(...)` when arguments include options such as `-p COM5`.
+3. Pass normal `idf.py` arguments after the script, or with `-IdfArgs @(...)` when arguments include options such as `-p COMx`.
 4. Use `-Level ultra` for very short output, `-Level full` by default, and `-Level lite` when broader context is useful.
 5. On command failure, keep output conservative and include enough error context to debug.
 
 For wrapper mode, first run `scripts/install-wrapper-mode.ps1` if `where.exe idf.py.cmd` does not find the shim. Then run commands from any directory with `-C`, or from inside the ESP-IDF project directory without `-C`:
 
 ```powershell
-lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk build
-lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk -p COM5 flash
+lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project build
+lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project -p COMx flash
 ```
 
-On this workstation, keep `LOWFAT_HOME` set to `C:\Users\NPWH\.lowfat`; this is where the installed ESP-IDF plugin lives. The global Codex hook should call `C:\Users\NPWH\.codex\hooks\lowfat\lowfat.cmd hook`, which sets `LOWFAT_HOME` before invoking lowfat.
+Set `LOWFAT_HOME` to `$env:USERPROFILE\.lowfat` so lowfat can find installed plugins. If a Codex hook is used, make the hook set `LOWFAT_HOME` before invoking lowfat.
 
 ## What The Filter Keeps
 
@@ -65,22 +65,22 @@ On this workstation, keep `LOWFAT_HOME` set to `C:\Users\NPWH\.lowfat`; this is 
 Run these after changing the filter, wrapper, or lowfat binary:
 
 ```powershell
-$env:LOWFAT_HOME = "C:\Users\NPWH\.lowfat"
+$env:LOWFAT_HOME = "$env:USERPROFILE\.lowfat"
 lowfat.exe plugin list
 lowfat.exe plugin doctor
 lowfat.exe plugin info esp-idf-compact
-lowfat.exe rewrite "idf.py.cmd -C D:\espidf\github\esp32-blynk build"
+lowfat.exe rewrite "idf.py.cmd -C D:\path\to\esp-idf-project build"
 ```
 
 Known-good sample result: the bundled ESP-IDF sample filtered from `388` tokens to `129` tokens, about `66.8%` saved, while preserving CMake warning lines, generated `.bin`, binary size, and `Project build complete`.
 
-If Windows Application Control blocks `C:\Users\NPWH\.cargo\bin\lowfat.exe`, verify its signature:
+If Windows Application Control blocks `lowfat.exe`, verify its signature:
 
 ```powershell
-Get-AuthenticodeSignature C:\Users\NPWH\.cargo\bin\lowfat.exe
+Get-AuthenticodeSignature "$env:USERPROFILE\.cargo\bin\lowfat.exe"
 ```
 
-This install uses a local code-signing certificate named `CN=NPWH Local Code Signing`; re-sign after reinstalling or overwriting `lowfat.exe`.
+If your organization requires signed binaries, sign the locally built `lowfat.exe` according to your local security policy after reinstalling or overwriting it.
 
 ## Bundled Resources
 

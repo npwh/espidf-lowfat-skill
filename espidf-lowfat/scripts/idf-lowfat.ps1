@@ -4,22 +4,44 @@ param(
     [string]$ProjectPath = (Get-Location).Path,
     [ValidateSet("lite", "full", "ultra")]
     [string]$Level = "full",
-    [string]$ProfilePath = "C:\Espressif\tools\Microsoft.v5.5.4.PowerShell_profile.ps1",
+    [string]$ProfilePath = $env:IDF_POWERSHELL_PROFILE,
     [string]$LowfatHome = "$env:USERPROFILE\.lowfat",
     [string]$LowfatPluginPath = "$env:USERPROFILE\.lowfat\plugins\idf.py\esp-idf-compact"
 )
 
 if (-not $IdfArgs -or $IdfArgs.Count -eq 0) {
-    throw "Pass idf.py arguments, for example: idf-lowfat.ps1 -ProjectPath D:\espidf\github\esp32-blynk build"
+    throw "Pass idf.py arguments, for example: idf-lowfat.ps1 -ProjectPath D:\path\to\esp-idf-project build"
 }
 
-if (-not (Test-Path -Path $ProfilePath)) {
-    throw "ESP-IDF PowerShell profile not found: $ProfilePath"
+function Resolve-IdfProfile {
+    param([string]$RequestedProfilePath)
+
+    if ($RequestedProfilePath -and (Test-Path -Path $RequestedProfilePath)) {
+        return $RequestedProfilePath
+    }
+
+    $candidates = @()
+    if ($env:IDF_POWERSHELL_PROFILE) {
+        $candidates += $env:IDF_POWERSHELL_PROFILE
+    }
+    $candidates += Get-ChildItem -Path "$env:USERPROFILE\.espressif", "C:\Espressif\tools" -Filter "Microsoft.*.PowerShell_profile.ps1" -Recurse -ErrorAction SilentlyContinue |
+        Sort-Object LastWriteTime -Descending |
+        Select-Object -ExpandProperty FullName
+
+    foreach ($candidate in $candidates) {
+        if ($candidate -and (Test-Path -Path $candidate)) {
+            return $candidate
+        }
+    }
+
+    throw "ESP-IDF PowerShell profile not found. Pass -ProfilePath or set IDF_POWERSHELL_PROFILE to Microsoft.*.PowerShell_profile.ps1."
 }
 
 if (-not (Test-Path -Path $ProjectPath)) {
     throw "ESP-IDF project path not found: $ProjectPath"
 }
+
+$ProfilePath = Resolve-IdfProfile -RequestedProfilePath $ProfilePath
 
 $skillRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $sourceFilter = Join-Path $skillRoot "references\esp-idf-compact.filter.lf"

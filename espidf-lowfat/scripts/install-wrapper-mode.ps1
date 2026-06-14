@@ -1,7 +1,5 @@
 param(
     [string]$ShimDir = "$env:USERPROFILE\.cargo\bin",
-    [string]$IdfPath = "E:\esp\v5.5.4\esp-idf",
-    [string]$IdfToolsPath = "C:\Espressif\tools",
     [string]$LowfatHome = "$env:USERPROFILE\.lowfat",
     [string]$LowfatPluginPath = "$env:USERPROFILE\.lowfat\plugins\idf.py\esp-idf-compact"
 )

@@ -11,16 +11,22 @@ npx.cmd skills add npwh/espidf-lowfat-skill@espidf-lowfat -g -y
 Or with the Codex skill installer:
 
 ```powershell
-python C:\Users\NPWH\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py --repo npwh/espidf-lowfat-skill --path espidf-lowfat
+python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo npwh/espidf-lowfat-skill --path espidf-lowfat
 ```
 
 ## Use
 
 ```powershell
-$env:LOWFAT_HOME = "C:\Users\NPWH\.lowfat"
-lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk build
-lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk size
+$env:LOWFAT_HOME = "$env:USERPROFILE\.lowfat"
+lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project build
+lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project size
 lowfat.exe stats
+```
+
+For helper mode:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1" -ProjectPath "D:\path\to\esp-idf-project" build
 ```
 
 The skill itself lives in [`espidf-lowfat/`](espidf-lowfat/).
