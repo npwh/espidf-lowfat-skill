@@ -1,0 +1,9 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Upstream lowfat
+    url: https://github.com/zdk/lowfat
+    about: Use upstream lowfat for lowfat core issues unrelated to this ESP-IDF integration.
+  - name: ESP-IDF
+    url: https://github.com/espressif/esp-idf
+    about: Use ESP-IDF for framework, toolchain, and firmware issues unrelated to filtering.
+

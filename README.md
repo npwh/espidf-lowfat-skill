@@ -2,9 +2,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Codex skill for running ESP-IDF build, flash, monitor, and size commands through [lowfat](https://github.com/zdk/lowfat) compact output filters on Windows.
+Portable LLM-agent package for running ESP-IDF build, flash, monitor, and size commands through [lowfat](https://github.com/zdk/lowfat) compact output filters on Windows.
 
-This repository provides a Codex skill, ESP-IDF filter rules, and Windows helper scripts for lowfat. It does not vendor or redistribute lowfat itself; install lowfat from the upstream project: [zdk/lowfat](https://github.com/zdk/lowfat).
+This repository provides a Codex-compatible skill, ESP-IDF filter rules, and Windows helper scripts for lowfat. It can also be used by Claude Code, Pi, aider, Cursor-style agents, CI agents, or any LLM coding agent that can run PowerShell commands. It does not vendor or redistribute lowfat itself; install lowfat from the upstream project: [zdk/lowfat](https://github.com/zdk/lowfat).
 
 ## LLM Install Context
 
@@ -12,7 +12,8 @@ Use this section as context for another LLM or coding agent that needs to instal
 
 ### What this repo is
 
-- A Codex skill named `espidf-lowfat`.
+- A portable skill/package named `espidf-lowfat`.
+- A Codex-compatible skill folder for agents that understand Codex skills.
 - A lowfat plugin/filter for `idf.py` and `idf.py.cmd`.
 - Windows PowerShell helper scripts for ESP-IDF build, flash, monitor, and size output.
 - Not a fork or bundled copy of lowfat.
@@ -62,7 +63,7 @@ Alternative Codex installer:
 python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo npwh/espidf-lowfat-skill --path espidf-lowfat
 ```
 
-For agents that do not support Codex skills, clone the repository and run the scripts directly:
+For any agent that does not support Codex skills, clone the repository and run the scripts directly:
 
 ```powershell
 git clone https://github.com/npwh/espidf-lowfat-skill.git
@@ -71,7 +72,7 @@ cd espidf-lowfat-skill
 
 ### Install ESP-IDF lowfat wrapper mode
 
-Run this after installing the skill:
+Run this after installing the skill with Codex:
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\espidf-lowfat\scripts\install-wrapper-mode.ps1"
@@ -149,7 +150,26 @@ lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project build
 lowfat.exe stats --audit
 ```
 
-See [`AGENTS.md`](AGENTS.md) for copy-pasteable instructions intended for LLM agents.
+See [`AGENTS.md`](AGENTS.md) and [`docs/llm-agent-install.md`](docs/llm-agent-install.md) for copy-pasteable instructions intended for LLM agents.
+
+## Prompt For Any LLM Agent
+
+Paste this into another LLM agent if you want it to install and use the repo without extra context:
+
+```text
+Install and use https://github.com/npwh/espidf-lowfat-skill on Windows.
+Credit upstream lowfat at https://github.com/zdk/lowfat and ESP-IDF at https://github.com/espressif/esp-idf.
+Do not assume Codex is available. If Codex skills are supported, run:
+npx.cmd skills add npwh/espidf-lowfat-skill@espidf-lowfat -g -y
+Otherwise clone the repo, run:
+cargo install lowfat
+git clone https://github.com/npwh/espidf-lowfat-skill.git
+powershell.exe -ExecutionPolicy Bypass -File ".\espidf-lowfat-skill\espidf-lowfat\scripts\install-wrapper-mode.ps1"
+Then run ESP-IDF through lowfat:
+lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project build
+lowfat.exe stats --audit
+If ESP-IDF PowerShell profile discovery fails, set IDF_POWERSHELL_PROFILE or pass -ProfilePath to helper scripts.
+```
 
 ## CI Template
 

@@ -1,0 +1,35 @@
+name: Filter request
+description: Request better preservation or reduction for ESP-IDF output.
+title: "[Filter]: "
+labels: ["filter"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when the filter removes useful ESP-IDF signal or keeps too much noise.
+  - type: dropdown
+    id: command_type
+    attributes:
+      label: ESP-IDF command type
+      options:
+        - build
+        - flash
+        - monitor
+        - size
+        - menuconfig
+        - other
+  - type: textarea
+    id: keep
+    attributes:
+      label: Lines that should be kept
+      render: text
+  - type: textarea
+    id: remove
+    attributes:
+      label: Lines that should be reduced or removed
+      render: text
+  - type: textarea
+    id: context
+    attributes:
+      label: Why these lines matter
+

@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a problem with ESP-IDF lowfat filtering, install, or wrapper mode.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please remove secrets before sharing logs.
+  - type: input
+    id: host
+    attributes:
+      label: Agent or host
+      description: Codex, Claude Code, Pi, aider, Cursor-style agent, CI, or plain PowerShell.
+      placeholder: Codex
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Include Windows, PowerShell, ESP-IDF, and lowfat versions.
+      placeholder: Windows 11, PowerShell 5.1/7.x, ESP-IDF v5.x, lowfat 0.x
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Paste the command you ran. Remove private paths and secrets.
+      render: powershell
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened?
+      description: Paste the smallest useful sanitized log sample.
+      render: text
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed Wi-Fi credentials, tokens, private endpoints, device secrets, and proprietary logs.
+          required: true
+
