@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate skill metadata
+        shell: pwsh
+        run: |
+          $skill = "espidf-lowfat/SKILL.md"
+          if (-not (Test-Path $skill)) { throw "Missing $skill" }
+          $content = Get-Content -Raw $skill
+          if ($content -notmatch "(?ms)^---\s+name:\s*espidf-lowfat\s+description:\s*.+?\s+---") {
+            throw "SKILL.md frontmatter is missing required name/description"
+          }
+          foreach ($path in @(
+            "espidf-lowfat/agents/openai.yaml",
+            "espidf-lowfat/references/esp-idf-compact.filter.lf",
+            "espidf-lowfat/scripts/idf-lowfat.ps1",
+            "espidf-lowfat/scripts/install-wrapper-mode.ps1",
+            "espidf-lowfat/scripts/invoke-idf-raw.ps1"
+          )) {
+            if (-not (Test-Path $path)) { throw "Missing $path" }
+          }
+
+      - name: Parse PowerShell scripts
+        shell: pwsh
+        run: |
+          $scripts = Get-ChildItem espidf-lowfat/scripts -Filter *.ps1
+          foreach ($script in $scripts) {
+            $errors = $null
+            [void][System.Management.Automation.PSParser]::Tokenize((Get-Content -Raw $script.FullName), [ref]$errors)
+            if ($errors) {
+              $errors | Format-List
+              throw "PowerShell parse errors in $($script.FullName)"
+            }
+          }
+
+      - name: Check public repo hygiene
+        shell: pwsh
+        run: |
+          $patterns = @(
+            "C:\\Users",
+            "D:\\espidf",
+            "E:\\esp",
+            "gho_",
+            "panuchat",
+            "CN=NPWH"
+          )
+          $files = Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch "\\.git\\" }
+          foreach ($file in $files) {
+            $text = Get-Content -Raw $file.FullName -ErrorAction SilentlyContinue
+            foreach ($pattern in $patterns) {
+              if ($text -match [regex]::Escape($pattern)) {
+                throw "Potential private value '$pattern' found in $($file.FullName)"
+              }
+            }
+          }

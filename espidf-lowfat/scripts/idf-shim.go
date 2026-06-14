@@ -8,13 +8,18 @@ import (
 )
 
 func main() {
-	userProfile := os.Getenv("USERPROFILE")
-	if userProfile == "" {
-		fmt.Fprintln(os.Stderr, "ERROR: USERPROFILE is not set")
+	exe, err := os.Executable()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: cannot resolve executable path: %v\n", err)
 		os.Exit(1)
 	}
 
-	script := filepath.Join(userProfile, ".codex", "skills", "espidf-lowfat", "scripts", "invoke-idf-raw.ps1")
+	script := filepath.Join(filepath.Dir(exe), "invoke-idf-raw.ps1")
+	if _, err := os.Stat(script); err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: invoke-idf-raw.ps1 not found next to shim: %v\n", err)
+		os.Exit(1)
+	}
+
 	args := []string{"-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script}
 	args = append(args, os.Args[1:]...)
 

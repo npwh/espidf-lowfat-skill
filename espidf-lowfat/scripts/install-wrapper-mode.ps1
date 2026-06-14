@@ -25,9 +25,10 @@ commands = ["idf.py", "idf.py.cmd"]
 New-Item -ItemType Directory -Force -Path $ShimDir | Out-Null
 $shimPath = Join-Path $ShimDir "idf.py.cmd"
 $shortShimPath = Join-Path $ShimDir "idf.cmd"
+$rawScript = Join-Path $skillRoot "scripts\invoke-idf-raw.ps1"
 $shim = @"
 @echo off
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%USERPROFILE%\.codex\skills\espidf-lowfat\scripts\invoke-idf-raw.ps1" %*
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$rawScript" %*
 exit /b %ERRORLEVEL%
 "@
 

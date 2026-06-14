@@ -1,5 +1,8 @@
 # espidf-lowfat-skill
 
+[![CI](https://github.com/npwh/espidf-lowfat-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/npwh/espidf-lowfat-skill/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Codex skill for running ESP-IDF build, flash, monitor, and size commands through [lowfat](https://github.com/zdk/lowfat) compact output filters on Windows.
 
 This repository provides a Codex skill, ESP-IDF filter rules, and Windows helper scripts for lowfat. It does not vendor or redistribute lowfat itself; install lowfat from the upstream project: [zdk/lowfat](https://github.com/zdk/lowfat).
@@ -48,6 +51,8 @@ If your Windows security policy blocks locally built binaries, sign or allow the
 
 ### Install this skill
 
+For Codex or other agents that support `skills add`:
+
 ```powershell
 npx.cmd skills add npwh/espidf-lowfat-skill@espidf-lowfat -g -y
 ```
@@ -58,12 +63,25 @@ Alternative Codex installer:
 python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo npwh/espidf-lowfat-skill --path espidf-lowfat
 ```
 
+For agents that do not support Codex skills, clone the repository and run the scripts directly:
+
+```powershell
+git clone https://github.com/npwh/espidf-lowfat-skill.git
+cd espidf-lowfat-skill
+```
+
 ### Install ESP-IDF lowfat wrapper mode
 
 Run this after installing the skill:
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\espidf-lowfat\scripts\install-wrapper-mode.ps1"
+```
+
+If you cloned the repo instead of installing as a Codex skill:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File ".\espidf-lowfat\scripts\install-wrapper-mode.ps1"
 ```
 
 That script:
@@ -103,6 +121,36 @@ Use helper mode when you want a direct PowerShell wrapper around ESP-IDF:
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1" -ProjectPath "D:\path\to\esp-idf-project" build
 ```
+
+From a cloned repo:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File ".\espidf-lowfat\scripts\idf-lowfat.ps1" -ProjectPath "D:\path\to\esp-idf-project" build
+```
+
+## Agent Compatibility
+
+This project is designed to be usable by any LLM coding agent that can run shell commands on Windows.
+
+| Agent / host | Recommended path |
+| --- | --- |
+| Codex | Install with `npx.cmd skills add ...`, then run wrapper mode or helper mode. |
+| Claude Code | Clone repo or install as a skill if your skill manager supports it; configure a `PreToolUse` Bash hook for upstream lowfat when desired. |
+| Pi / other local agents | Clone repo, run `install-wrapper-mode.ps1`, then call `lowfat.exe idf.py.cmd ...`. |
+| Generic shell agent | Use direct command prefixing: `lowfat.exe idf.py.cmd -C <project> build`. |
+| CI or scripted agents | Use helper mode with `idf-lowfat.ps1` and explicit `-ProjectPath` / `-ProfilePath`. |
+
+Minimal generic install flow for any agent:
+
+```powershell
+cargo install lowfat
+git clone https://github.com/npwh/espidf-lowfat-skill.git
+powershell.exe -ExecutionPolicy Bypass -File ".\espidf-lowfat-skill\espidf-lowfat\scripts\install-wrapper-mode.ps1"
+lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project build
+lowfat.exe stats --audit
+```
+
+See [`AGENTS.md`](AGENTS.md) for copy-pasteable instructions intended for LLM agents.
 
 ### Troubleshooting
 
