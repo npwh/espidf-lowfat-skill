@@ -5,7 +5,9 @@ description: Run ESP-IDF idf.py build, flash, monitor, and related firmware comm
 
 # ESP-IDF Lowfat
 
-Use this skill to run ESP-IDF commands while preserving firmware debugging signal and removing noisy CMake, Ninja, esptool, Wi-Fi init, and serial chatter.
+Use this skill to run ESP-IDF commands through [lowfat](https://github.com/zdk/lowfat) while preserving firmware debugging signal and removing noisy CMake, Ninja, esptool, Wi-Fi init, and serial chatter.
+
+This skill is an integration for the upstream lowfat project, not a replacement for it. Install and update lowfat from [zdk/lowfat](https://github.com/zdk/lowfat).
 
 ## Quick Start
 

@@ -1,6 +1,8 @@
 # espidf-lowfat-skill
 
-Codex skill for running ESP-IDF build, flash, monitor, and size commands through lowfat compact output filters on Windows.
+Codex skill for running ESP-IDF build, flash, monitor, and size commands through [lowfat](https://github.com/zdk/lowfat) compact output filters on Windows.
+
+This repository provides a Codex skill, ESP-IDF filter rules, and Windows helper scripts for lowfat. It does not vendor or redistribute lowfat itself; install lowfat from the upstream project: [zdk/lowfat](https://github.com/zdk/lowfat).
 
 ## Install
 
