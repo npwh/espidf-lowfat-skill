@@ -6,6 +6,7 @@
 - Add generic install guidance for Claude Code, Pi, aider, Cursor-style agents, CI agents, and unknown LLM hosts.
 - Add a copy-paste agent prompt and universal Windows install flow.
 - Add contributing notes and GitHub issue templates for bug reports and filter requests.
+- Document that users and LLM agents can add or customize ESP-IDF lowfat filters.
 
 ## v0.1.0 - 2026-06-14
 

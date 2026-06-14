@@ -61,6 +61,23 @@ powershell.exe -ExecutionPolicy Bypass -File .\espidf-lowfat\scripts\idf-lowfat.
 
 Keep failures conservative: preserve enough raw output for the first actionable compiler, CMake, linker, flash, or monitor error.
 
+## Custom Filters
+
+Users may customize the lowfat filter. The bundled source filter is:
+
+```text
+espidf-lowfat/references/esp-idf-compact.filter.lf
+```
+
+The installed plugin copies are usually:
+
+```text
+%USERPROFILE%\.lowfat\plugins\idf.py\esp-idf-compact\filter.lf
+%USERPROFILE%\.lowfat\plugins\idf\esp-idf-wrapper-compact\filter.lf
+```
+
+When changing filters, preserve compiler errors, CMake errors, linker errors, flash failures, panics, backtraces, resets, and final build summaries. Add project-specific keep rules for important firmware tags. Validate by running a real command through `lowfat.exe ...` and checking `lowfat.exe stats --audit`.
+
 ## Host Selection
 
 - Codex: prefer `npx.cmd skills add ...`, then use wrapper mode.

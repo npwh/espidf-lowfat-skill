@@ -128,6 +128,32 @@ From a cloned repo:
 powershell.exe -ExecutionPolicy Bypass -File ".\espidf-lowfat\scripts\idf-lowfat.ps1" -ProjectPath "D:\path\to\esp-idf-project" build
 ```
 
+## Custom Filters
+
+Yes, you can add or customize filters.
+
+This repo ships a default ESP-IDF filter at:
+
+```text
+espidf-lowfat/references/esp-idf-compact.filter.lf
+```
+
+After wrapper installation, the active lowfat plugin copy is installed under:
+
+```text
+%USERPROFILE%\.lowfat\plugins\idf.py\esp-idf-compact\filter.lf
+%USERPROFILE%\.lowfat\plugins\idf\esp-idf-wrapper-compact\filter.lf
+```
+
+Recommended workflow:
+
+1. Copy the bundled filter or edit the installed plugin copy.
+2. Add keep/reduce rules for your project-specific log tags, such as device manager, MQTT, Blynk, sensor, OTA, or custom component output.
+3. Test with `lowfat.exe filter <path-to-filter.lf>` or run a real command through `lowfat.exe idf.py.cmd ...`.
+4. Check savings with `lowfat.exe stats --audit`.
+
+For a longer guide, see [`docs/custom-filters.md`](docs/custom-filters.md).
+
 ## Agent Compatibility
 
 This project is designed to be usable by any LLM coding agent that can run shell commands on Windows.

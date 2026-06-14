@@ -103,3 +103,14 @@ If your organization requires signed binaries, sign the locally built `lowfat.ex
 - `references/esp-idf-compact.filter.lf`: lowfat filter rules used by the helper and installed to `~\.lowfat\plugins\idf.py\esp-idf-compact`.
 
 Read the filter file only when editing lowfat rules.
+
+## Custom Filters
+
+Users can add or customize lowfat filters. Edit the bundled source filter at `references/esp-idf-compact.filter.lf` when changing this skill, or edit the installed plugin copy under `$env:USERPROFILE\.lowfat\plugins` for a machine-local override.
+
+When customizing:
+
+1. Keep fatal compiler, CMake, linker, flash, panic, backtrace, reset, and build summary lines.
+2. Add project-specific keep rules for important firmware tags such as MQTT, OTA, Blynk, sensors, provisioning, or device manager logs.
+3. Test with `lowfat.exe filter <filter.lf>` for quick iteration.
+4. Run at least one real wrapped command, such as `lowfat.exe idf.py.cmd -C D:\path\to\esp-idf-project build`, so `lowfat.exe stats --audit` records savings.
