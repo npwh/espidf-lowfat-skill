@@ -1,0 +1,4 @@
+interface:
+  display_name: "ESP-IDF Lowfat"
+  short_description: "Compact ESP-IDF build and monitor logs"
+  default_prompt: "Use $espidf-lowfat to run ESP-IDF build, flash, or monitor with concise lowfat output."

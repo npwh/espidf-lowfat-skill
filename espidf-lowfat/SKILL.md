@@ -1,0 +1,92 @@
+---
+name: espidf-lowfat
+description: Run ESP-IDF idf.py build, flash, monitor, and related firmware commands with compact lowfat output on Windows PowerShell. Use when working on ESP32/ESP-IDF projects and the user wants less noisy build logs, flash logs, serial monitor logs, Blynk/MQTT/Wi-Fi/device logs, or asks to use lowfat with ESP-IDF.
+---
+
+# ESP-IDF Lowfat
+
+Use this skill to run ESP-IDF commands while preserving firmware debugging signal and removing noisy CMake, Ninja, esptool, Wi-Fi init, and serial chatter.
+
+## Quick Start
+
+For lowfat wrapper mode with stats/history, use:
+
+```powershell
+$env:LOWFAT_HOME = "C:\Users\NPWH\.lowfat"
+lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk build
+```
+
+Use `idf.py.cmd` because Windows PowerShell normally exposes `idf.py` as an alias, not as an executable that lowfat can wrap reliably.
+
+Prefer the bundled helper:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File C:\Users\NPWH\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1 -ProjectPath D:\espidf\github\esp32-blynk build
+```
+
+For flash:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File C:\Users\NPWH\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1 -ProjectPath D:\espidf\github\esp32-blynk -IdfArgs @("-p","COM5","flash")
+```
+
+For concise serial monitor output:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File C:\Users\NPWH\.codex\skills\espidf-lowfat\scripts\idf-lowfat.ps1 -ProjectPath D:\espidf\github\esp32-blynk -IdfArgs @("-p","COM5","monitor")
+```
+
+## Workflow
+
+1. Use `scripts/idf-lowfat.ps1` instead of calling `idf.py` directly when output will be long.
+2. Pass the ESP-IDF project path with `-ProjectPath`.
+3. Pass normal `idf.py` arguments after the script, or with `-IdfArgs @(...)` when arguments include options such as `-p COM5`.
+4. Use `-Level ultra` for very short output, `-Level full` by default, and `-Level lite` when broader context is useful.
+5. On command failure, keep output conservative and include enough error context to debug.
+
+For wrapper mode, first run `scripts/install-wrapper-mode.ps1` if `where.exe idf.py.cmd` does not find the shim. Then run commands from any directory with `-C`, or from inside the ESP-IDF project directory without `-C`:
+
+```powershell
+lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk build
+lowfat.exe idf.py.cmd -C D:\espidf\github\esp32-blynk -p COM5 flash
+```
+
+On this workstation, keep `LOWFAT_HOME` set to `C:\Users\NPWH\.lowfat`; this is where the installed ESP-IDF plugin lives. The global Codex hook should call `C:\Users\NPWH\.codex\hooks\lowfat\lowfat.cmd hook`, which sets `LOWFAT_HOME` before invoking lowfat.
+
+## What The Filter Keeps
+
+- Compiler warnings/errors, linker failures, fatal errors, and missing Kconfig warnings
+- Build summaries, binary sizes, app partition free space, and generated artifact paths
+- Flash port, chip, MAC, write verification, reset, and flash failures
+- Serial lines involving `BLYNK_MANAGER`, `DEVICE_MANAGER`, `MQTT`, `Wi-Fi`, `Unhandled`, warnings, errors, panic, backtrace, and reset
+
+## Verification
+
+Run these after changing the filter, wrapper, or lowfat binary:
+
+```powershell
+$env:LOWFAT_HOME = "C:\Users\NPWH\.lowfat"
+lowfat.exe plugin list
+lowfat.exe plugin doctor
+lowfat.exe plugin info esp-idf-compact
+lowfat.exe rewrite "idf.py.cmd -C D:\espidf\github\esp32-blynk build"
+```
+
+Known-good sample result: the bundled ESP-IDF sample filtered from `388` tokens to `129` tokens, about `66.8%` saved, while preserving CMake warning lines, generated `.bin`, binary size, and `Project build complete`.
+
+If Windows Application Control blocks `C:\Users\NPWH\.cargo\bin\lowfat.exe`, verify its signature:
+
+```powershell
+Get-AuthenticodeSignature C:\Users\NPWH\.cargo\bin\lowfat.exe
+```
+
+This install uses a local code-signing certificate named `CN=NPWH Local Code Signing`; re-sign after reinstalling or overwriting `lowfat.exe`.
+
+## Bundled Resources
+
+- `scripts/idf-lowfat.ps1`: Windows PowerShell helper that loads ESP-IDF, installs the lowfat ESP-IDF filter if needed, runs `idf.py`, and filters output.
+- `scripts/install-wrapper-mode.ps1`: Installs the lowfat plugin and `idf.py.cmd` shim for wrapper mode.
+- `scripts/invoke-idf-raw.ps1`: Raw ESP-IDF command runner used by the wrapper shim.
+- `references/esp-idf-compact.filter.lf`: lowfat filter rules used by the helper and installed to `~\.lowfat\plugins\idf.py\esp-idf-compact`.
+
+Read the filter file only when editing lowfat rules.

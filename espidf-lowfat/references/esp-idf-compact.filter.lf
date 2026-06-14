@@ -1,0 +1,49 @@
+#!/usr/bin/env lowfat-filter
+# Compact ESP-IDF idf.py output while preserving firmware debugging signal.
+
+define keep_problems:
+    keep /ERROR|Error|error|WARN|Warn|warn|FAILED|Failed|failed|fatal|panic|abort|Guru Meditation|Backtrace|stack overflow|undefined reference|\.c:\d+|\.cpp:\d+|\.h:\d+/
+
+build|all:
+    if exit failed:
+        raw
+    elif level ultra:
+        keep /ERROR|Error|error|WARN|Warn|warn|FAILED|Failed|failed|fatal|undefined reference|Project build complete|Generated .*\.bin|binary size|free\./
+        tail 80
+        or "ESP-IDF build passed with no visible warnings"
+    else:
+        keep /CMake Warning|warning:|Warning:|WARN|ERROR|Error|error|FAILED|Failed|failed|fatal|undefined reference|Missing kconfig option|git rev-parse returned|Could not use 'git describe'|Bootloader binary size|Generated .*\.bin|binary size|Project build complete|idf.py flash|idf.py -p PORT flash/
+        tail 160
+
+flash:
+    if exit failed:
+        raw
+    elif level ultra:
+        keep /Serial port|Connecting|Chip is|MAC:|Wrote .* bytes|Hash of data verified|Hard resetting|Done|ERROR|WARN|failed|fatal|panic/
+        tail 80
+        or "ESP-IDF flash completed"
+    else:
+        keep /Serial port|Connecting|Chip is|Features:|Crystal is|MAC:|Changing baud rate|Wrote .* bytes|Hash of data verified|Leaving|Hard resetting|Done|ERROR|WARN|failed|fatal|panic/
+        tail 180
+
+monitor|logs|log:
+    if level ultra:
+        keep /ESP32_BLYNK_MAIN|BLYNK_MANAGER|DEVICE_MANAGER|MQTT|Wi-Fi connected|Blynk MQTT connected|Unhandled|ERROR|Error|error|WARN|Warn|warn|failed|panic|Guru Meditation|Backtrace|stack overflow|abort|reset/
+        tail 120
+        or "no actionable ESP32 log lines"
+    else:
+        drop /^\s*$/
+        drop /wifi_init:|Init dynamic|Init static|tcpip mbox|udp mbox|tcp mbox|tcp tx win|tcp rx win|tcp mss|IRAM OP enabled/
+        keep /ESP32_BLYNK_MAIN|BLYNK_MANAGER|DEVICE_MANAGER|MQTT|WIFI|Wi-Fi|connected|disconnected|Unhandled|ERROR|Error|error|WARN|Warn|warn|failed|panic|Guru Meditation|Backtrace|stack overflow|abort|reset/
+        tail 180
+
+*:
+    if exit failed:
+        raw
+    elif level ultra:
+        keep /ESP32_BLYNK_MAIN|BLYNK_MANAGER|DEVICE_MANAGER|MQTT|Wi-Fi connected|Blynk MQTT connected|Unhandled|Serial port|Connecting|Chip is|MAC:|Wrote .* bytes|Hash of data verified|Hard resetting|Done|ERROR|Error|error|WARN|Warn|warn|FAILED|Failed|failed|fatal|panic|Guru Meditation|Backtrace|stack overflow|undefined reference|Bootloader binary size|Generated .*\.bin|binary size|Project build complete/
+        tail 120
+        or "no ESP-IDF problem lines"
+    else:
+        keep /ESP32_BLYNK_MAIN|BLYNK_MANAGER|DEVICE_MANAGER|MQTT|WIFI|Wi-Fi|connected|disconnected|Unhandled|Serial port|Connecting|Chip is|Features:|Crystal is|MAC:|Changing baud rate|Wrote .* bytes|Hash of data verified|Leaving|Hard resetting|Done|CMake Warning|warning:|Warning:|WARN|ERROR|Error|error|FAILED|Failed|failed|fatal|panic|Guru Meditation|Backtrace|stack overflow|Missing kconfig option|git rev-parse returned|Could not use 'git describe'|Bootloader binary size|Generated .*\.bin|binary size|Project build complete|idf.py flash|idf.py -p PORT flash/
+        tail 180
