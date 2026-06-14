@@ -7,6 +7,7 @@
 - Add a copy-paste agent prompt and universal Windows install flow.
 - Add contributing notes and GitHub issue templates for bug reports and filter requests.
 - Document that users and LLM agents can add or customize ESP-IDF lowfat filters.
+- Add `CREDITS.md` and move README attribution into a standard acknowledgements style.
 
 ## v0.1.0 - 2026-06-14
 

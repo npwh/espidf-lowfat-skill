@@ -11,6 +11,8 @@ This repo integrates ESP-IDF command output with upstream lowfat:
 
 It provides filter rules and Windows scripts only. It does not include the lowfat binary.
 
+For attribution details, read `CREDITS.md`. Preserve credit for both upstream projects when copying install instructions or generating docs.
+
 ## Fresh Windows Install
 
 1. Install prerequisites: Git, PowerShell, Rust/Cargo, ESP-IDF.

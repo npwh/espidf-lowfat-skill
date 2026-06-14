@@ -18,13 +18,15 @@ Use this section as context for another LLM or coding agent that needs to instal
 - Windows PowerShell helper scripts for ESP-IDF build, flash, monitor, and size output.
 - Not a fork or bundled copy of lowfat.
 
-### Credits and upstream references
+### Upstream references
 
 - lowfat upstream: [zdk/lowfat](https://github.com/zdk/lowfat)
 - lowfat describes itself as a lightweight CLI that reduces AI token costs by filtering unnecessary CLI output before it reaches an agent.
 - lowfat upstream install examples include `cargo install lowfat` and direct usage such as `lowfat git status`.
 - lowfat upstream exposes `lowfat stats`, `lowfat stats --audit`, `lowfat history`, `lowfat plugin new`, and `lowfat filter` for measuring savings and authoring filters.
 - ESP-IDF is Espressif's official framework for ESP32-family firmware development: [Espressif ESP-IDF](https://github.com/espressif/esp-idf)
+
+See [`CREDITS.md`](CREDITS.md) for attribution details.
 
 ### Prerequisites
 
@@ -200,6 +202,15 @@ If ESP-IDF PowerShell profile discovery fails, set IDF_POWERSHELL_PROFILE or pas
 ## CI Template
 
 A GitHub Actions workflow template is available at [`docs/ci-workflow-template.yml`](docs/ci-workflow-template.yml). Copy it to `.github/workflows/ci.yml` if your GitHub token has the `workflow` scope.
+
+## Acknowledgements
+
+This project is an integration layer built around upstream open source work:
+
+- [zdk/lowfat](https://github.com/zdk/lowfat) for compacting command output before it reaches LLM agents.
+- [Espressif ESP-IDF](https://github.com/espressif/esp-idf) for ESP32-family firmware development tooling.
+
+This repository does not vendor or redistribute either project. See [`CREDITS.md`](CREDITS.md) for details.
 
 ### Troubleshooting
 
