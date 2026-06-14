@@ -49,9 +49,9 @@ jobs:
             "C:\\Users",
             "D:\\espidf",
             "E:\\esp",
-            "gho_",
-            "panuchat",
-            "CN=NPWH"
+            ("gh" + "o_"),
+            ("pan" + "uchat"),
+            ("CN=" + "NPWH")
           )
           $files = Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch "\\.git\\" }
           foreach ($file in $files) {

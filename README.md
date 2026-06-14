@@ -1,6 +1,5 @@
 # espidf-lowfat-skill
 
-[![CI](https://github.com/npwh/espidf-lowfat-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/npwh/espidf-lowfat-skill/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Codex skill for running ESP-IDF build, flash, monitor, and size commands through [lowfat](https://github.com/zdk/lowfat) compact output filters on Windows.
@@ -151,6 +150,10 @@ lowfat.exe stats --audit
 ```
 
 See [`AGENTS.md`](AGENTS.md) for copy-pasteable instructions intended for LLM agents.
+
+## CI Template
+
+A GitHub Actions workflow template is available at [`docs/ci-workflow-template.yml`](docs/ci-workflow-template.yml). Copy it to `.github/workflows/ci.yml` if your GitHub token has the `workflow` scope.
 
 ### Troubleshooting
 
